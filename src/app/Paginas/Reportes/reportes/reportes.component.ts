@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import {
+  ResultadoMenuI,
+  ResultadoPermisosI,
+} from 'src/app/Modelos/login.interface';
 
 @Component({
   selector: 'app-reportes',
@@ -6,46 +12,47 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./reportes.component.css'],
 })
 export class ReportesComponent implements OnInit {
+
+  constructor(
+    private router: Router,
+
+    private cookeService: CookieService
+  ) {}
   ngOnInit(): void {
-    this.getCurrentDate();
+    this.SubMenus();
   }
-  constructor() {}
-  ListaCarteras: any[] = [
-    { number: '1', name: 'Marcinex', icon: 'bi bi-list' },
-    { number: '2', name: 'Pacifico', icon: 'bi bi-cake2' },
-    { number: '3', name: 'Jep', icon: 'bi bi-building' },
-    { number: '4', name: 'RM', icon: 'bi bi-battery-half' },
-    { number: '5', name: 'Jaher', icon: 'bi bi-bank' },
-  ];
+  permisos: ResultadoPermisosI = JSON.parse(localStorage.getItem('usuario')!);
+  Menus: ResultadoMenuI[] = this.permisos.menu;
+  PaginaActual: ResultadoMenuI = this.Menus.find((elemento) => {
+    return elemento.men_url === 'reportes';
+  }) as ResultadoMenuI;
+  PaginaNombre: string = this.PaginaActual.men_descripcion;
+  MenusReportes!: any[];
+  async SubMenus() {
+    this.MenusReportes = this.Menus.filter((elemento: any) => {
+      return (
+        elemento.men_url === 'reporte-general' ||
+        elemento.men_url === 'ultima-gestion' 
+      );
+    }).sort((a: any, b: any) => a.men_url.localeCompare(b.men_url));
+  }
+  // MenusAdministracion: any[]=[
+  //   {number: '1',name: 'Administracion' ,icon: 'fa-solid fa-screwdriver-wrench',url:'administracion',count:'15'},
+  //   {number: '2',name: 'Calcular' ,icon: 'fa-solid fa-calculator',url: 'menu',count:'15'},
+  //   {number: '3',name: 'Clientes' ,icon: 'fa-solid fa-user',url: 'menu',count:'15'},
+  //   {number: '4',name: 'Descargar' ,icon: 'fa-solid fa-download',url: 'menu',count:'15'},
+  //   {number: '5',name: 'Gestionar' ,icon: 'fa-brands fa-get-pocket',url: 'menu',count:'15'},
+  //   {number: '6',name: 'Notificaciones' ,icon: 'fa-solid fa-triangle-exclamation',url: 'menu',count:'15'},
+  //   {number: '7',name: 'Pagos' ,icon: 'fa-solid fa-piggy-bank',url: 'menu',count:'15'},
+  //   {number: '8',name: 'Reportes' ,icon: 'fa-solid fa-ranking-star', url:'reportes',count:'15'},
+  //   {number: '9',name: 'Ultima Gestion' ,icon: 'fa-solid fa-chart-line',url: 'menu',count:'15'},
+  //   {number: '10',name: 'Volver a Llamar' ,icon: 'fa-solid fa-headset',url: 'menu',count:'15'},
+  //   {number: '11',name: 'Tipo de Cartera' ,icon: 'fa-solid fa-calculator',url: 'tipocartera',count:'15'},
+  //   {number: '12',name: 'Cartera' ,icon: 'fa-solid fa-calculator',url: 'cartera',count:'15'},
+  // ];
 
-  EstadoCliente: any[] = [
-    { number: '1', name: 'Contactado', icon: 'bi bi-list' },
-    { number: '2', name: 'No Contactado', icon: 'bi bi-cake2' },
-    { number: '3', name: 'Compromiso de pago', icon: 'bi bi-building' },
-    { number: '4', name: 'Compromiso de incumplido', icon: 'bi bi-battery-half' },
-    { number: '5', name: 'Combenio de pago', icon: 'bi bi-bank' },
-  ];
-  Gestores: any[] = [
-    { number: '1', name: 'Juan Perez', icon: 'bi bi-list' },
-    { number: '2', name: 'Pedro Perez', icon: 'bi bi-cake2' },
-    { number: '3', name: 'Carlos Perez', icon: 'bi bi-building' },
-    { number: '4', name: 'Marco Perez', icon: 'bi bi-battery-half' },
-    { number: '5', name: 'Maria Perez', icon: 'bi bi-bank' },
-  ];
-
-  getCurrentDate() {
-    const startDate = document.getElementById('startDate') as HTMLInputElement;
-    const endDate = document.getElementById('endDate') as HTMLInputElement;
-    const today = new Date();
-    const year = today.getFullYear();
-    let month = (today.getMonth() + 1).toString();
-    let day = today.getDate().toString();
-    month = (Number(month) < 10 ? `0${month}` : month).toString();
-    day = (Number(day) < 10 ? `0${day}` : day).toString();
-
-    startDate.value = `${year}-${month}-${day}`;
-    endDate.value = `${year}-${month}-${day}`;
-
-    // return `${year}-${month}-${day}`;
+  BotonNavegar(url: string) {
+    console.log(url)
+    this.router.navigate(['/' + url]);
   }
 }

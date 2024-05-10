@@ -28,6 +28,8 @@ import {
   Tipo_TrabajoI,
   TrabajoI,
   UsuariosI,
+  RecargoI,
+  Tipo_RecargoI
 } from '../Modelos/response.interface';
 import { LoginI } from '../Modelos/login.interface';
 
@@ -62,6 +64,8 @@ export class Encriptacion {
        | Tipo_TelefonoI
        | Tipo_TrabajoI
        | PagosI
+       |RecargoI
+       |Tipo_RecargoI
 
   ): string {
     let jsonResponse: string = JSON.stringify(objeto);

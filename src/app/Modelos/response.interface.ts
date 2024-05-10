@@ -557,3 +557,24 @@ export interface FiltroPagos {
   rango: number;
   [key: string]: string | number | string[] |  number[] ;
 }
+export interface RecargoI {
+  id_recarga: number;
+  rec_descripcion: string;
+  rec_id_cartera:number,
+  rec_valor: string;
+  rec_fecha_act: Date;
+  rec_fecha_desact: Date;
+  rec_fecha_in: Date;
+  rec_fecha_up: Date;
+  rec_esactivo: string;
+}
+export interface Tipo_RecargoI
+{
+  id_tipo_recargo: number;
+  rec_tip_descripcion: string;
+  rec_tip_fecha_act: Date;
+  rec_tip_fecha_desact: Date;
+  rec_tip_fecha_in: Date;
+  rec_tip_fecha_up: Date;
+  rec_tip_esactivo: string;
+}

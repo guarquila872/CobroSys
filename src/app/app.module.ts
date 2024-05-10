@@ -12,6 +12,11 @@ import { AuthInterceptorService } from './Control/jwt-interceptor.interceptor';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { GeneralComponent } from './Paginas/Reportes/general/general.component';
+import { UltimaComponent } from './Paginas/Reportes/ultima/ultima.component';
+import { ConfiguracionComponent } from './Paginas/Independientes/configuracion/configuracion.component';
+import { RecargoComponent } from './Paginas/Independientes/recargo/recargo.component';
+import { TipoRecargoComponent } from './Paginas/Independientes/tipo-recargo/tipo-recargo.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +25,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HeaderComponent,
     SidebarComponent,
     routingComponent,
+    GeneralComponent,
+    UltimaComponent,
+    ConfiguracionComponent,
+    RecargoComponent,
+    TipoRecargoComponent,
   ],
   imports: [
     BrowserModule,

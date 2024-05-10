@@ -34,6 +34,7 @@ import {
   NotificacionI,
   PagosI,
   PermisosI,
+  RecargoI,
   ResponseI,
   RolesI,
   TelefonoI,
@@ -42,6 +43,7 @@ import {
   Tipo_DireccionI,
   Tipo_Doc_AdicionalI,
   Tipo_GestionI,
+  Tipo_RecargoI,
   Tipo_TelefonoI,
   Tipo_TrabajoI,
   TrabajoI,
@@ -1232,6 +1234,44 @@ export class ApiService {
       })
     );
   }
+  GetGestionFracionadoSecondFiltro(filtro: FiltroGestion): Observable<ResponseI> {
+    let direccion = this.url + 'Gestion/FiltroSecond';
+    const params = new HttpParams({ fromObject: filtro });
+    return this.http.get<any>(direccion, { params }).pipe(
+      map((data) => {
+        return JSON.parse(this.objeto.decrypt(data['valor']));
+      }),
+      catchError((error) => {
+        console.error('Error al obtener y desencriptar los datos', error);
+        throw error;
+      })
+    );
+  }
+  GetGestionFracionadoThirdFiltro(filtro: FiltroGestion): Observable<ResponseI> {
+    let direccion = this.url + 'Gestion/FiltroThird';
+    const params = new HttpParams({ fromObject: filtro });
+    return this.http.get<any>(direccion, { params }).pipe(
+      map((data) => {
+        return JSON.parse(this.objeto.decrypt(data['valor']));
+      }),
+      catchError((error) => {
+        console.error('Error al obtener y desencriptar los datos', error);
+        throw error;
+      })
+    );
+  }
+  GetGestionFracionado3(codigo: number, rango: number): Observable<ResponseI> {
+    let direccion = this.url + 'Gestion/TodasUltimasGestiones' + codigo + ',' + rango;
+    return this.http.get<any>(direccion).pipe(
+      map((data) => {
+        return JSON.parse(this.objeto.decrypt(data['valor']));
+      }),
+      catchError((error) => {
+        console.error('Error al obtener y desencriptar los datos', error);
+        throw error;
+      })
+    );
+  }
   PostGestion(elemento: GestionI): Observable<any> {
     let Encryptado: EntidadEncriptado = {
       valor: this.objeto.encriptarAES(elemento),
@@ -1883,6 +1923,128 @@ export class ApiService {
       })
     );
   }
+  /************************************RECARGOS***************************************** */
+  GetRecargasFracionado(
+    codigo: number,
+    rango: number
+  ): Observable<ResponseI> {
+    let direccion = this.url + 'Recargo/Todos' + codigo + ',' + rango;
+    return this.http.get<any>(direccion).pipe(
+      map((data) => {
+        return JSON.parse(this.objeto.decrypt(data['valor']));
+      }),
+      catchError((error) => {
+        console.error('Error al obtener y desencriptar los datos', error);
+        throw error;
+      })
+    );
+  }
+  GetRecargasFracionadoFiltro(
+    variable: string,
+    tipo: number
+  ): Observable<ResponseI> {
+    let direccion = this.url + 'Recargo/Filtro' + variable + ',' + tipo;
+    return this.http.get<any>(direccion).pipe(
+      map((data) => {
+        return JSON.parse(this.objeto.decrypt(data['valor']));
+      }),
+      catchError((error) => {
+        console.error('Error al obtener y desencriptar los datos', error);
+        throw error;
+      })
+    );
+  }
+  PostRecarga(elemento: RecargoI): Observable<any> {
+    let Encryptado: EntidadEncriptado = {
+      valor: this.objeto.encriptarAES(elemento),
+    };
+    let direccion = this.url + 'Recargo';
+    return this.http.post<any>(direccion, Encryptado).pipe(
+      map((data) => {
+        return JSON.parse(this.objeto.decrypt(data['valor']));
+      }),
+      catchError((error) => {
+        console.error('Error al obtener y desencriptar los datos', error);
+        throw error;
+      })
+    );
+  }
+  PutRecarga(elemento:RecargoI): Observable<any> {
+    let Encryptado: EntidadEncriptado = {
+      valor: this.objeto.encriptarAES(elemento),
+    };
+    let direccion = this.url + 'Recargo';
+    return this.http.put<any>(direccion, Encryptado).pipe(
+      map((data) => {
+        return JSON.parse(this.objeto.decrypt(data['valor']));
+      }),
+      catchError((error) => {
+        console.error('Error al obtener y desencriptar los datos', error);
+        throw error;
+      })
+    );
+  }
+//********************* TIPO Recargos *********************** */
+GetTipoRecargoFracionado(
+  codigo: number,
+  rango: number
+): Observable<ResponseI> {
+  let direccion = this.url + 'Tipo_Recargo/Todos' + codigo + ',' + rango;
+  return this.http.get<any>(direccion).pipe(
+    map((data) => {
+      return JSON.parse(this.objeto.decrypt(data['valor']));
+    }),
+    catchError((error) => {
+      console.error('Error al obtener y desencriptar los datos', error);
+      throw error;
+    })
+  );
+}
+GetTipoRecargoFracionadoFiltro(
+  variable: string,
+  tipo: number
+): Observable<ResponseI> {
+  let direccion = this.url + 'Tipo_Recargo/Filtro' + variable + ',' + tipo;
+  return this.http.get<any>(direccion).pipe(
+    map((data) => {
+      return JSON.parse(this.objeto.decrypt(data['valor']));
+    }),
+    catchError((error) => {
+      console.error('Error al obtener y desencriptar los datos', error);
+      throw error;
+    })
+  );
+}
+PostTipoRecargo(elemento: Tipo_RecargoI): Observable<any> {
+  let Encryptado: EntidadEncriptado = {
+    valor: this.objeto.encriptarAES(elemento),
+  };
+  let direccion = this.url + 'Tipo_Recargo';
+  return this.http.post<any>(direccion, Encryptado).pipe(
+    map((data) => {
+      return JSON.parse(this.objeto.decrypt(data['valor']));
+    }),
+    catchError((error) => {
+      console.error('Error al obtener y desencriptar los datos', error);
+      throw error;
+    })
+  );
+}
+PutTipoRecargo(elemento: Tipo_RecargoI): Observable<any> {
+  let Encryptado: EntidadEncriptado = {
+    valor: this.objeto.encriptarAES(elemento),
+  };
+  let direccion = this.url + 'Tipo_Recargo';
+  return this.http.put<any>(direccion, Encryptado).pipe(
+    map((data) => {
+      return JSON.parse(this.objeto.decrypt(data['valor']));
+    }),
+    catchError((error) => {
+      console.error('Error al obtener y desencriptar los datos', error);
+      throw error;
+    })
+  );
+}
   // GetTipoTrabajoFracionadoFiltro(variable: string,tipo: number): Observable<ResponseI> {
   //   let direccion = this.url + 'Tipo_Trabajo/Filtro'+variable+','+tipo;
   //   return this.http.get<any>(direccion).pipe(
