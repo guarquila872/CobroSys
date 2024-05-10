@@ -542,7 +542,7 @@ export interface FiltroGestion {
   fecha_inicial: string;
   fecha_final: string;
   ultima_gestion: string;
-  [key: string]: string | Date | number | boolean | string[] | Date[]| number[] | boolean[];
+  [key: string]: string  | number | boolean | string[] | number[] | boolean[];
 }
 export interface FiltroPagos {
   tipo: number;
