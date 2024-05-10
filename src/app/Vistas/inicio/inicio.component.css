@@ -1,0 +1,21 @@
+@import "src/app/Estilos/Modal.css";
+
+#chartRadio {
+  padding: 0;
+  max-width: 450px;
+  margin: 35px auto;
+}
+
+#ChartFondo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #000;
+}
+.TablaAnchoTextoDeterminado {
+  /* min-width: 150px; */
+  max-width: 350px;
+  font-size: 12px; /* Tamaño de la fuente pequeño */
+}
+
+

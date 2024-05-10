@@ -1,0 +1,667 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <h4 class="NombrePage">{{PaginaNombre}}</h4>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card card-default">
+                    <section class="horizontal-center" *ngIf="TituloFormulario == ''">
+                        <div class="card-header" style="background-color: var(--color-formulario-primario);">
+                            <div class="btn-group" role="group">
+                                <button class="btnHome" (click)="ListarElementos(1)"><i
+                                        class="fa-solid fa-house"></i></button>
+
+                            </div>
+                            <div class="btn-group float-right" role="group">
+
+                                <label type="text-info" class="formControl CenterItemColorSecundario center ml-1"
+                                    style="width: 50%;" *ngIf="itemBusqueda.value !== ''">{{itemBusqueda.value}}</label>
+
+                                <button type="button" class="btnFilter ml-1" data-toggle="dropdown"><i
+                                        class="bi bi-funnel"></i></button>
+
+                                <div class="OcultarMax450px" style="width: 50%;">
+                                    <input
+                                        *ngIf="itemBusqueda.value !== '' && (itemBusqueda.value === 'Descripción' ||itemBusqueda.value === 'Descripción Incompleta')"
+                                        id="txtValorBusqueda" [formControl]="txtBusqueda"
+                                        (keydown.enter)="FiltrarElemento()" (keyup)="ConvertirMayusculas()"
+                                        class="form-control ml-2" type="text" placeholder="Buscar" autofocus>
+                                </div>
+                                <div class="ml-2  OcultarMax450px">
+                                    <select class="form-select"
+                                        *ngIf="itemBusqueda.value !== '' && itemBusqueda.value === 'Estado'"
+                                        [formControl]="txtBusqueda" [spellcheck]="false" style="width: 150px;">
+                                        <option *ngFor="let estado of ParametrosEstado" [value]="estado.value">
+                                            {{estado.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <button type="button" class="btnBuscar ml-2 OcultarMax450px"
+                                        *ngIf="txtBusqueda.value !== ''" (click)="FiltrarElemento()"><i
+                                            class="bi bi-search"></i></button>
+                                </div>
+
+
+                                <button *ngIf="LecturaEscritura != 0" type="button" class="btnAgregar ml-2"
+                                    (click)="AgregarEditarElemento(1)"><i class="bi bi-plus-circle-dotted"></i></button>
+
+                                <div class="dropdown-menu" role="menu">
+                                    <a class="dropdown-item" (click)="GetBusquedaPor(item)"
+                                        *ngFor="let item of ParametrosDeBusqueda">{{item}}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-header OcultarMin450px"
+                            style="background-color: var(--color-formulario-primario);">
+
+                            <div class="btn-group float-right" role="group">
+                                <input
+                                    *ngIf="itemBusqueda.value !== '' && (itemBusqueda.value === 'Descripción' ||itemBusqueda.value === 'Descripción Incompleta')"
+                                    id="txtValorBusqueda" style="width: 80%;" [formControl]="txtBusqueda"
+                                    (keydown.enter)="FiltrarElemento()" (keyup)="ConvertirMayusculas()"
+                                    class="form-control ml-2" type="text" placeholder="Buscar" autofocus>
+
+                                <select class="form-select"
+                                    *ngIf="itemBusqueda.value !== '' && itemBusqueda.value === 'Estado'"
+                                    [formControl]="txtBusqueda" [spellcheck]="false" style="width: 150px;">
+                                    <option *ngFor="let estado of ParametrosEstado" [value]="estado.value">
+                                        {{estado.name}}
+                                    </option>
+                                </select>
+
+                                <button type="button" class="btnBuscar ml-2" *ngIf="txtBusqueda.value !== ''"
+                                    (click)="FiltrarElemento()"><i class="bi bi-search"></i></button>
+
+                            </div>
+                        </div>
+
+                    </section>
+                    <!-- FORMULARIO PARA AGREGAR ELEMENTOS -->
+                    <section class="vertical-center" *ngIf="TituloFormulario != ''">
+                        <div class="card-body" style="background-color: var(--color-formulario-secundario);">
+                            <div class="card-header" style="background-color: var(--color-formulario-primario);">
+                                <button type="button" (click)="CerrarAgregarEditarElemento()"
+                                    class="btn btn-close float-right"></button>
+                                <h2 class="Centrar">{{TituloFormulario}} {{PaginaNombre.toLocaleLowerCase()}}</h2>
+                            </div>
+                            <div class="card-body" style="background-color: var(--color-formulario-secundario);">
+                                <form [formGroup]="RolesForms">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-12" *ngIf="TituloFormulario != 'Agregar'">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="id_rol" placeholder=""
+                                                    formControlName="id_rol">
+                                                <label for="id_rol">Id Rol</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-12">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="rol_descripcion"
+                                                    placeholder="" formControlName="rol_descripcion">
+                                                <label for="rol_descripcion">Descripcion</label>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-lg-4 col-12">
+                                            <div class="btn-group Centrar">
+                                                <label for="id_permiso">Permisos</label>&nbsp;&nbsp;
+                                                <select class="form-select" formControlName="id_permiso"
+                                                    style="max-width: 175px;min-width: 125px;"
+                                                    (click)="PermisosList.length != 0?null:ListarPermisos()">
+                                                    <option *ngIf="PermisosList.length == 0" disabled>Cargando ...
+                                                    </option>
+                                                    <option *ngFor="let s of PermisosList" [value]="s.id_permiso">
+                                                        {{s.perm_descripcion}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            
+                                            <small><button *ngIf="TituloFormulario != 'Visualizar'"
+                                                    class="btnBuscar ml-2" (click)="VerPermiso(RolesForms.get('id_permiso')!.value!)"
+                                                    [disabled]="RolesForms.get('id_permiso')!.value == ''"><i
+                                                        class="bi bi-eye"></i></button>
+                                                <button *ngIf="TituloFormulario != 'Visualizar'" class="btnAgregar ml-2"
+                                                    (click)="AgregarPermiso()"><i
+                                                        class="bi bi-plus-circle-dotted"></i></button></small>
+
+                                        </div>
+
+
+                                        <div class="col-lg-4 col-12">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="rol_observacion"
+                                                    placeholder="" formControlName="rol_observacion">
+                                                <label for="rol_observacion">Observación</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 col-12" *ngIf="TituloFormulario != 'Agregar'">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="rol_fecha_act"
+                                                    placeholder="" formControlName="rol_fecha_act">
+                                                <label for="rol_fecha_act">Fecha de Activación</label>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-4 col-12" *ngIf="TituloFormulario != 'Agregar'">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="rol_fecha_desact"
+                                                    placeholder="" formControlName="rol_fecha_desact">
+                                                <label for="rol_fecha_desact">Fecha de Desactivación</label>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-4 col-12" *ngIf="TituloFormulario != 'Agregar'">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="rol_fecha_in" placeholder=""
+                                                    formControlName="rol_fecha_in">
+                                                <label for="rol_fecha_in">Fecha de Ingreso</label>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-4 col-12" *ngIf="TituloFormulario != 'Agregar'">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="rol_fecha_up" placeholder=""
+                                                    formControlName="rol_fecha_up">
+                                                <label for="rol_fecha_up">Fecha de Actualización</label>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-4 col-12">
+                                            <div class="Centrar">
+                                                <div class="btn-group">
+                                                    <div class="form-group">
+                                                        <label for="rol_esactivo">Estado</label>&nbsp;
+                                                        <div class="custom-control custom-switch Centrar"
+                                                            title="Estado">
+                                                            <input type="checkbox" class="custom-control-input"
+                                                                formControlName="rol_esactivo" name="estado"
+                                                                id="rol_esactivo">
+                                                            <label class="custom-control-label"
+                                                                for="rol_esactivo">{{RolesForms.get('rol_esactivo')!.value
+                                                                == false ?
+                                                                'Inactivo' : 'Activo'}}</label>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="card-footer" style="background-color: var(--color-formulario-terciario);">
+                                <div class="row Centrar ">
+                                    <small>
+                                        <button class="btnAceptar" [disabled]="RolesForms.invalid"
+                                            *ngIf="TituloFormulario != 'Visualizar'" id="btnAgregar"
+                                            (click)="ActDesControles(1);GuardarObjeto(RolesForms.value);ActDesControles(0)">Guardar</button>
+                                        <button class="btnCancelar ml-3"
+                                            (click)="CerrarAgregarEditarElemento()">Cancelar</button>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- FORMULARIO PARA LISTAR ELEMENTOS -->
+                    <section class="expand-bottom" *ngIf="TituloFormulario == ''">
+                        <div class="card-body" style="background-color: var(--color-formulario-secundario);"
+                            *ngIf="!loading ;else loadingOrError">
+                            <div class="card-footer" style="background-color: var(--color-formulario-terciario);"
+                                *ngIf="ListaRoles.length != 0">
+                                <div class="float-right clearfix">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btnOk btn-sm dropdown-toggle"
+                                                data-toggle="dropdown" aria-expanded="false">
+                                                <label id="lblFiltro0"></label>
+                                            </button>
+                                            <ul class="dropdown-menu" x-placement="top-start">
+                                                <li class="dropdown-item" style="cursor: pointer;"
+                                                    (click)="FiltrarPor('Descripcion',0)">
+                                                    <a>Descripcion</a>
+                                                </li>
+
+
+                                            </ul>
+                                        </div>
+
+                                        <input type="text" id="TxtFiltro0" (keyup)="FiltrarLista(0,0)"
+                                            class="form-control form-control-sm">
+
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btnOk btn-sm" (click)="VaciarFiltro(0)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-bordered table-responsive-md" *ngIf="ListaRoles.length != 0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th id="ThDescripcion0">Descripción</th>
+                                        <th>Observacón</th>
+                                        <th class="OcultarMax450px">Ingreso</th>
+                                        <th class="OcultarMax450px">Actualización</th>
+                                        <th *ngIf="LecturaEscritura != 0">Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let datos of DatosCargaMasiva; let i = index">
+                                        <th>{{InicioPaginacion + i + 1}}</th>
+                                        <th>{{datos.rol_descripcion}}</th>
+                                        <th>{{datos.rol_observacion}}</th>
+                                        <th class="OcultarMax450px">{{Fechas.fechaCortaAbt(datos.rol_fecha_in)}}</th>
+                                        <th class="OcultarMax450px">{{Fechas.fechaCortaAbt(datos.rol_fecha_up)}}</th>
+                                        <th class="OcultarMax450px ContenidoCentrado" *ngIf="LecturaEscritura != 0">
+                                            <div class="custom-switch">
+                                                <input type="checkbox" class="custom-control-input"
+                                                    id="idEstado_{{datos.id_rol}}"
+                                                    [checked]="datos.rol_esactivo==='1'?true:false" name="estado"
+                                                    (change)="ActualizaEstado(datos)">
+                                                <label class="custom-control-label"
+                                                    for="idEstado_{{datos.id_rol}}"></label>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="btn-group" role="group">
+                                                <button class="btnVer" (click)="CargarElemento(datos,3)">
+                                                    <i class="fa-regular fa-eye"></i></button>
+                                                <button *ngIf="LecturaEscritura != 0" class="ml-2 btnEditar"
+                                                    (click)="CargarElemento(datos,2)">
+                                                    <i class="bi bi-pencil-fill"></i></button>
+                                                <button *ngIf="LecturaEscritura != 0" class="ml-2 btnEliminar"
+                                                    (click)="EliminarElemento(datos)">
+                                                    <i class="bi bi-trash"></i></button>
+
+                                            </div>
+                                        </th>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer" style="background-color: var(--color-formulario-terciario);"
+                            *ngIf="ListaRoles.length != 0 ">
+                            <div class="row">
+                                <div class="col-lg-2 col-6">
+                                    <p>Total<strong>&nbsp;{{ContadorDatosGeneral}}</strong></p>
+                                </div>
+                                <div class="col-lg-2 col-6">
+                                    <div *ngIf="ContadorDatosGeneral != ContadorDatos">
+                                        <p>Resultado Filtro<strong>&nbsp;{{ContadorDatos}}</strong></p>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-2 col-6">
+                                    <div>
+                                        <p>Elementos<strong>&nbsp;{{InicioPaginacion+1}}</strong>-<strong>&nbsp;{{InicioPaginacion
+                                                + RangoPaginacion}}</strong></p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-6">
+                                    <!-- <p>Grupo<strong>&nbsp;1</strong>-<strong>&nbsp;10</strong></p> -->
+
+                                </div>
+                                <div class="col-lg-4 col-12">
+                                    <div class="form-group">
+                                        <div class="float-right">
+                                            <small>
+                                                <button (click)="InicioPaginacion == 0?BtnPrevious(0,1):BtnPrevious(0)"
+                                                    *ngIf="FraccionDatos !== 0||InicioPaginacion !==0" type="button"
+                                                    class="BtnNextPrevious" aria-label=""
+                                                    style="display: inline-block;"><i
+                                                        class="bi bi-arrow-left-circle"></i>
+                                                    Anterior</button>
+
+                                                <button
+                                                    *ngIf="(InicioPaginacion + RangoPaginacion) < ContadorDatos||ContadorDatos == RangoDatos"
+                                                    (click)="(InicioPaginacion + RangoPaginacion) == ContadorDatos?BtnNext(0,1):BtnNext(0)"
+                                                    type="button" class="BtnNextPrevious ml-2 " aria-label=""
+                                                    style="display: inline-block;">Siguiente <i
+                                                        class="bi bi-arrow-right-circle"></i></button>
+                                            </small>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+
+
+
+                </div>
+            </div>
+        </section>
+
+
+        <router-outlet></router-outlet>
+    </div>
+</div>
+<app-footer></app-footer>
+
+<section class="modal" id="ModalAgregarPermiso">
+    <div class="modal__container ">
+        <div class="col-sm alert alert-success ">
+            <button type="button" (click)="CerrarPermiso()" class="btn btn-close float-right"></button>
+            <h2 class="modal__title Centrar">Permisos</h2>
+
+            <!-- ****************************************** -->
+            <section class="vertical-center" *ngIf="TituloFormulario != ''">
+                <div class="card-body" style="background-color: var(--color-formulario-secundario);">
+                    <div class="card-body" style="background-color: var(--color-formulario-secundario);">
+                        <form [formGroup]="PermisosForms">
+                            <div class="row px-2 p-1">
+                                <div class="col-lg-8 col-12">
+                                    <div class="form-floating mb-3" >
+                                        <input type="text" class="form-control" id="perm_descripcion" placeholder=""
+                                            formControlName="perm_descripcion">
+                                        <label for="perm_descripcion">Descripcion</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-12">
+                                    <div class="Centrar">
+                                        <div class="btn-group">
+                                            <div class="form-group">
+                                                <label for="perm_esactivo">Estado</label>&nbsp;
+                                                <div class="custom-control custom-switch Centrar" title="Estado">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        formControlName="perm_esactivo" name="estado"
+                                                        id="perm_esactivo">
+                                                    <label class="custom-control-label"
+                                                        for="perm_esactivo">{{PermisosForms.get('perm_esactivo')!.value
+                                                        == false ?
+                                                        'Inactivo' : 'Activo'}}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- AGREGAR LISTA DETALLE DE MENUS  -->
+                    <div class="card-header" style="background-color: var(--color-formulario-primario);">
+                        <h2 class="Centrar">Menus</h2>
+                    </div>
+                    <section>
+                        <div *ngIf="!ModoVista" class="float-left clearfix">
+                            <small>
+                                <div class="input-group">
+                                    <div class="custom-switch">
+                                        <input type="checkbox" id="Todos" name="estado" class="form-check-input"
+                                            [formControl]="SelecionarTodosMenu" (change)="SeleccionarTodos()">&nbsp;
+                                        <label id="LabelTodos" for="Todos">{{SelecionarTodosMenu.value === true ?
+                                            'Desmarcar Todos':'Marcar Todos'}}</label>
+                                    </div>
+                                </div>
+                            </small>
+                        </div>
+                        <div class="card-footer" style="background-color: var(--color-formulario-terciario);">
+                            <div class="float-right clearfix">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button type="button" class="btn btnOk btn-sm dropdown-toggle"
+                                            data-toggle="dropdown" aria-expanded="false">
+                                            <label id="lblFiltro1"></label>
+                                        </button>
+                                        <ul class="dropdown-menu" x-placement="top-start">
+                                            <li class="dropdown-item" style="cursor: pointer;"
+                                                (click)="FiltrarPor('Descripcion',1)">
+                                                <a>Descripcion</a>
+                                            </li>
+
+
+                                        </ul>
+                                    </div>
+
+                                    <input type="text" id="TxtFiltro1" (keyup)="FiltrarLista(1,1)"
+                                        class="form-control form-control-sm">
+
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btnOk btn-sm" (click)="VaciarFiltro(1)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="table-responsive-md alert ">
+                        <table class="table table-bordered table-responsive-md">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">#</th>
+                                    <th  *ngIf="!ModoVista"></th>
+                                    <th id="ThDescripcion1">Descripcion</th>
+                                    <th>Permiso</th>
+                                    <th>Estado</th>
+
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="ContadorDatosGeneralM > 0">
+                                <tr *ngFor="let datos of DatosCargaMasivaM; let i = index">
+                                    <th>{{InicioPaginacionM + i + 1}}</th>
+                                    <td  *ngIf="!ModoVista">
+                                        <div class="custom-switch">
+                                            <input type="checkbox" class="form-check-input"
+                                             id="idEstado_{{datos.menusecuencial}}"
+                                                [checked]="datos.isCheked === '0'?false:true" name="estado"
+                                                (change)="ActualizarMenu(datos,1)">
+                                        </div>
+                                    </td>
+                                    <td>{{datos.menunombre}}</td>
+
+                                    <td>
+                                        <div class="custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="idTipo_{{datos.menusecuencial}}"
+                                                [checked]="datos.tipoSeleccion === '0'?false:true" name="estado"
+                                                (change)="ActualizarMenu(datos,2)" [disabled]="datos.isCheked === '0'">
+                                            <label class="custom-control-label"
+                                                for="idTipo_{{datos.menusecuencial}}">{{datos.tipoSeleccion == '0'
+                                                ?'Lectura' : 'Lectura y Escritura'}}</label>
+                                        </div>
+                                    </td>
+
+                                    <td >
+                                        <div class="custom-switch" >
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="esActivo{{datos.menusecuencial}}"
+                                                [checked]="datos.esActivo === '0'?false:true" name="estado"
+                                                [disabled]="datos.isCheked === '0'" (change)="ActualizarMenu(datos,3)">
+                                            <label class="custom-control-label"
+                                                for="esActivo{{datos.menusecuencial}}">{{datos.esActivo == '0'
+                                                ?
+                                                'Inactivo' :
+                                                'Activo'}}</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div *ngIf="ContadorDatosGeneralM > 0;else loadingOrError1"></div>
+                        <div class="form-group">
+                            <div class="float-right">
+                                <small>
+                                    <button (click)="InicioPaginacionM == 0?BtnPrevious(1):BtnPrevious(1)"
+                                        *ngIf="FraccionDatosM !== 0||InicioPaginacionM !==0" type="button"
+                                        class="BtnNextPrevious" aria-label="" style="display: inline-block;"><i
+                                            class="bi bi-arrow-left-circle"></i>
+                                        Anterior</button>
+
+                                    <button
+                                        *ngIf="(InicioPaginacionM + RangoPaginacionM) < ContadorDatosM||ContadorDatosM == RangoDatos"
+                                        (click)="(InicioPaginacionM + RangoPaginacionM) == ContadorDatosM?BtnNext(1):BtnNext(1)"
+                                        type="button" class="BtnNextPrevious ml-2 " aria-label=""
+                                        style="display: inline-block;">Siguiente <i
+                                            class="bi bi-arrow-right-circle"></i></button>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- AGREGAR LISTA DETALLE DE   CARTERA  -->
+                    <div class="card-header" style="background-color: var(--color-formulario-primario);">
+                        <h2 class="Centrar">Cartera</h2>
+                    </div>
+                    <section>
+                        <div *ngIf="!ModoVista" class="float-left clearfix">
+                            <small>
+                                <div class="input-group">
+                                    <div class="custom-switch">
+                                        <input type="checkbox" id="TodosC" name="estado" class="form-check-input"
+                                            [formControl]="SelecionarTodosCartera" (change)="SeleccionarTodosCartera()">&nbsp;
+                                        <label id="LabelTodosCartera" for="TodosC">{{SelecionarTodosCartera.value === true ?
+                                            'Desmarcar Todos':'Marcar Todos'}}</label>
+                                    </div>
+                                </div>
+                            </small>
+                        </div>
+                        <div class="card-footer" style="background-color: var(--color-formulario-terciario);">
+                            <div class="float-right clearfix">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button type="button" class="btn btnOk btn-sm dropdown-toggle"
+                                            data-toggle="dropdown" aria-expanded="false">
+                                            <label id="lblFiltro2"></label>
+                                        </button>
+                                        <ul class="dropdown-menu" x-placement="top-start">
+                                            <li class="dropdown-item" style="cursor: pointer;"
+                                                (click)="FiltrarPor('Descripcion',2)">
+                                                <a>Descripcion</a>
+                                            </li>
+
+
+                                        </ul>
+                                    </div>
+
+                                    <input type="text" id="TxtFiltro2" (keyup)="FiltrarLista(2,2)"
+                                        class="form-control form-control-sm">
+
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btnOk btn-sm" (click)="VaciarFiltro(2)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div  class="table-responsive-md alert ">
+                        <table class="table table-bordered table-responsive-md">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">#</th>
+                                    <th  *ngIf="!ModoVista"></th>
+                                    <th id="ThDescripcion2">Descripcion</th>
+                                    <th>Estado</th>
+
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="ContadorDatosGeneralC > 0">
+                                <tr *ngFor="let datos of DatosCargaMasivaC; let i = index">
+                                    <th>{{InicioPaginacionC + i + 1}}</th>
+                                    <td  *ngIf="!ModoVista">
+                                        <div class="custom-switch">
+                                            <input type="checkbox"  class="form-check-input"
+                                            id="idEstado_{{datos.idcartera}}"
+                                                [checked]="datos.Cheked === '0'?false:true" name="estado"
+                                                (change)="ActualizarCartera(datos,1)">
+                                        </div>
+                                    </td>
+                                    <td>{{datos.nombre + ' ' + datos.tipo}}</td>
+
+                                    <td>
+                                        <div class="custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="Activo{{datos.idcartera}}"
+                                                [checked]="datos.Activo === '0'?false:true" name="estado"
+                                                [disabled]="datos.Cheked === '0'" (change)="ActualizarCartera(datos,3)">
+                                            <label class="custom-control-label"
+                                                for="esActivo{{datos.menusecuencial}}">{{datos.esActivo == '0'
+                                                ?
+                                                'Inactivo' :
+                                                'Activo'}}</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div *ngIf="ContadorDatosGeneralC > 0;else loadingOrError1"></div>
+                        <div class="form-group">
+                            <div class="float-right">
+                                <small>
+                                    <button (click)="InicioPaginacionC == 0?BtnPrevious(2,2):BtnPrevious(2)"
+                                        *ngIf="FraccionDatosC !== 0||InicioPaginacionC !==0" type="button"
+                                        class="BtnNextPrevious" aria-label="" style="display: inline-block;"><i
+                                            class="bi bi-arrow-left-circle"></i>
+                                        Anterior</button>
+
+                                    <button
+                                        *ngIf="(InicioPaginacionC + RangoPaginacionC) < ContadorDatosC||ContadorDatosC == RangoDatos"
+                                        (click)="(InicioPaginacionC + RangoPaginacionC) == ContadorDatosC?BtnNext(2,2):BtnNext(2)"
+                                        type="button" class="BtnNextPrevious ml-2 " aria-label=""
+                                        style="display: inline-block;">Siguiente <i
+                                            class="bi bi-arrow-right-circle"></i></button>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                 
+                    <div class="card-footer" style="background-color: var(--color-formulario-terciario);">
+                        <div class="row Centrar ">
+                            <small>
+                                <button class="btnAceptar" [disabled]="PermisosForms.invalid"
+                                    *ngIf="!ModoVista" id="btnAgregar"
+                                    (click)="GuardarObjetoPermisos(PermisosForms.value)">Guardar</button>
+                                <button class="btnCancelar ml-3" (click)="CerrarPermiso()">Cancelar</button>
+                            </small>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </section>
+
+
+
+        </div>
+    </div>
+
+</section>
+
+
+
+<ng-template #loadingOrError>
+    <section>
+        <div class="ContenidoCentrado">
+            <div class="loader"></div>
+        </div>
+    </section>
+</ng-template>
+<ng-template #loadingOrError1>
+    <section>
+        <div class="ContenidoCentrado">
+            <div class="loader1"></div>
+        </div>
+    </section>
+</ng-template>

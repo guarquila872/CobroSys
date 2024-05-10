@@ -1,0 +1,49 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <h4 class="NombrePage">{{PaginaNombre}}</h4>
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-md-3 col-6">
+                        <div class="small-box bg-info"
+                        (click)="ActualizarValores()">
+                          <div class="inner">
+                            <h4>{{ContadorDatosGeneral}}</h4>
+                            <p>Creditos</p>
+                            <br>
+                          </div>
+                          <div class="icon">
+                            <i class="fas fa-3x fa-sync-alt"></i>
+                          </div>
+                        </div>
+            
+                      </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <router-outlet></router-outlet>
+    </div>
+</div>
+<app-footer></app-footer>
+
+<ng-template #loadingOrError>
+    <section>
+        <div class="ContenidoCentrado">
+            <div class="loader"></div>
+        </div>
+    </section>
+</ng-template>
+
+<section class="modal" id="Cargando">
+    <section>
+        <div class="CentroSobrepuesto">
+            <div class="loaderLogin"></div>
+        </div>
+    </section>
+</section>

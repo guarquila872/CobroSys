@@ -1,0 +1,164 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <h4 class="NombrePage">{{PaginaNombre}}</h4>
+        <!-- PAGINA DE SELECCION -->
+        <section class="content" *ngIf="TituloPagina == ''">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 col-12" style="cursor: pointer;" (click)="CargarArchivos()">
+                        <div class="info-box  bg-info">
+                            <span class="info-box-icon"><i class="fa-solid fa-envelopes-bulk"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">ARCHIVOS</span>
+                                <span class="fa-solid fa-upload"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-12" style="cursor: pointer;" (click)="CargarElementos()">
+                        <div class="info-box  bg-info">
+                            <span class="info-box-icon"><i class="fa-solid fa-file-lines"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">ELEMENTOS</span>
+                                <span class="fa-solid fa-upload"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+        <!-- PAGINA PARA CARGAR ARCHIVOS -->
+        <section class="content" *ngIf="TituloPagina == 'Cargar Archivos'">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-8 col-sm-6 col-12">
+                        <div class="input-group input-group-lg mb-3">
+                            <div class="input-group-prepend">
+                                <select class="form-select" [formControl]="itemFile" (change)="cambiarTipoArchivo()">
+                                    <option *ngFor="let s of TipoArchivo" [value]="s.value">
+                                        {{s.name}}
+                                    </option>
+                                    <option *ngIf="TipoArchivo.length == 0" disabled>Cargando ...</option>
+                                </select>
+                            </div>
+
+                            <input [disabled]="itemFile.invalid" id="SubirArchivo" type="file" class="form-control"
+                                (change)="LeerArchivo($event)">
+                            <span class="input-group-append">
+                                <button type="button" class="btnCancelar btn-flat"
+                                    (click)="EncerarComponentes()">Cancelar</button>
+                            </span>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+        <!-- PAGINA PARA CARGAR ELEMENTOS -->
+        <section class="content" *ngIf="TituloPagina == 'Cargar Elementos'">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-8 col-sm-6 col-12">
+                        <div class="input-group input-group-lg mb-3">
+                            <div class="input-group-prepend">
+                                <select class="form-select" [formControl]="itemFiles">
+                                    <option *ngFor="let s of TipoElemento" [value]="s.value">
+                                        {{s.name}}
+                                    </option>
+                                    <option *ngIf="TipoElemento.length == 0" disabled>Cargando ...</option>
+                                </select>
+                            </div>
+
+
+                            <input [disabled]="itemFiles.invalid" id="SubirArchivos" type="file" class="form-control"
+                                (change)="LeerArchivo($event)" accept=".xlsx">
+                            <span class="input-group-append">
+                                <button type="button" class="btnCancelar btn-flat"
+                                    (click)="EncerarComponentes()">Cancelar</button>
+                            </span>
+                        </div>
+
+
+                    </div>
+                    <div class="card-body" style="background-color: var(--color-formulario-secundario);"
+                        *ngIf="!cargando ;else loadingOrError1">
+                        <!-- <table class="table table-bordered table-responsive-md">
+                            <thead>
+                              <tr>
+                                <th *ngFor="let c of headers">{{ c }}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let employee of data">
+                                <td *ngFor="let value of employee">{{ value }}</td>
+                              </tr>
+                            </tbody>
+                          </table> -->
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th *ngFor="let header of data[0]">{{ header }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let row of data.slice(1)">
+                                      <td *ngFor="let cell of row">{{ cell }}</td>
+                                    </tr>
+                                  </tbody>
+                                  
+                            </table>
+                            <div class="col-lg-4 col-12">
+                                <div class="form-group">
+                                    <div class="float-right">
+                                        <small>
+                                            <button (click)="InicioPaginacion == 0?BtnPrevious(0,1):BtnPrevious(0)"
+                                                *ngIf="FraccionDatos !== 0||InicioPaginacion !==0" type="button"
+                                                class="BtnNextPrevious" aria-label=""
+                                                style="display: inline-block;"><i
+                                                    class="bi bi-arrow-left-circle"></i>
+                                                Anterior</button>
+
+                                            <button
+                                                *ngIf="(InicioPaginacion + RangoPaginacion) < ContadorDatos||ContadorDatos == RangoDatos"
+                                                (click)="(InicioPaginacion + RangoPaginacion) == ContadorDatos?BtnNext(0,1):BtnNext(0)"
+                                                type="button" class="BtnNextPrevious ml-2 " aria-label=""
+                                                style="display: inline-block;">Siguiente <i
+                                                    class="bi bi-arrow-right-circle"></i></button>
+                                        </small>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </section>
+        <!-- page -->
+
+
+        <router-outlet></router-outlet>
+    </div>
+</div>
+<app-footer></app-footer>
+
+
+<ng-template #loadingOrError1>
+    <section>
+        <div class="ContenidoCentrado">
+            <div class="loader1"></div>
+        </div>
+    </section>
+</ng-template>
